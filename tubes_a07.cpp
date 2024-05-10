@@ -39,8 +39,11 @@ void buildWords(TrieNode* node, vector<string>& results, string prefix) {
     if (node->isEndOfWord) {
         results.push_back(prefix);
     }
-    for (auto& [c, child] : node->children) {
-        buildWords(child, results, prefix + c);
+    // iterasi melalui setiap pasangan karakter dan node anak dari node saat ini
+    for (auto it = node->children.begin(); it != node->children.end(); ++it) {
+    char c = it->first; // mengambil karakter dari pasangan karakter-node
+    TrieNode* child = it->second; // mengambil node anak dari pasangan karakter-node
+    buildWords(child, results, prefix + c); // memanggil fungsi rekursif untuk membangun kata-kata yang relevan dengan prefiks
     }
 }
 
