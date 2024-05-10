@@ -23,3 +23,13 @@ void insertWord(TrieNode*& root, string word) {
     }
     node->isEndOfWord = true;
 }
+
+// Fungsi untuk menemukan node terakhir dari suatu prefix
+TrieNode* findNode(TrieNode* root, string prefix) {
+    TrieNode* node = root;
+    for (char c : prefix) {
+        if (!node->children.count(c)) return nullptr;
+        node = node->children[c];
+    }
+    return node;
+}
