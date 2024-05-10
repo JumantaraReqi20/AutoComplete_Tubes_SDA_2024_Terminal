@@ -53,3 +53,23 @@ vector<string> autocomplete(TrieNode* root, string prefix) {
     }
     return results;
 }
+
+int main() {
+    TrieNode* root = new TrieNode();
+    insertWord(root, "code");
+    insertWord(root, "coder");
+    insertWord(root, "coding");
+    insertWord(root, "hello");
+    insertWord(root, "world");
+
+    string prefix = "co";
+    vector<string> results = autocomplete(root, prefix);
+
+    cout << "Autocomplete suggestions for '" << prefix << "': " << endl;
+    for (string word : results) {
+        cout << word << endl;
+    }
+
+    cin.get(); // Menunggu input dari pengguna sebelum keluar
+    return 0;
+}
