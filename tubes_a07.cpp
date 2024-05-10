@@ -11,3 +11,15 @@ struct TrieNode {
     bool isEndOfWord;
     TrieNode() : isEndOfWord(false) {}
 };
+
+// Fungsi untuk memasukkan kata ke dalam Compact Trie
+void insertWord(TrieNode*& root, string word) {
+    TrieNode* node = root;
+    for (char c : word) {
+        if (!node->children.count(c)) {
+            node->children[c] = new TrieNode();
+        }
+        node = node->children[c];
+    }
+    node->isEndOfWord = true;
+}
