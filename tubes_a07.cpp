@@ -33,3 +33,23 @@ TrieNode* findNode(TrieNode* root, string prefix) {
     }
     return node;
 }
+
+// Fungsi rekursif untuk membangun semua kata yang memiliki prefix tertentu
+void buildWords(TrieNode* node, vector<string>& results, string prefix) {
+    if (node->isEndOfWord) {
+        results.push_back(prefix);
+    }
+    for (auto& [c, child] : node->children) {
+        buildWords(child, results, prefix + c);
+    }
+}
+
+// Fungsi untuk mencari semua kata yang memiliki prefix tertentu
+vector<string> autocomplete(TrieNode* root, string prefix) {
+    vector<string> results;
+    TrieNode* node = findNode(root, prefix);
+    if (node) {
+        buildWords(node, results, prefix);
+    }
+    return results;
+}
