@@ -113,7 +113,7 @@ void kota() {
     cout << "Ketik di sini : \n";
     cin >> prefix;
     // Mengubah char pertama menjadi uppercase.
-    prefix[0] = toupper(prefix[0]);
+    prefix[0] = static_cast<char>(prefix[0]);
     vector<string> results = autocomplete(root, prefix);
 
     cout << "Berikut ini nama kota yang berawalan '" << prefix << "': " << endl;
@@ -138,6 +138,7 @@ void namaOrang() {
     cout << "Berikut ini nama-nama orang yang berawalan '" << prefix << "': " << endl;
     for (string word : results) {
         cout << word << endl;
+        cin.get();
     }
 }
 
