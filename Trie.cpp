@@ -2,6 +2,9 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -12,7 +15,7 @@ struct TrieNode {
     TrieNode() : isEndOfWord(false) {}
 };
 
-// Fungsi untuk memasukkan kata ke dalam Compact Trie
+// Fungsi untuk memasukkan kata ke dalam Trie
 void insertWord(TrieNode*& root, string word) {
     TrieNode* node = root;
     for (char c : word) {
@@ -23,6 +26,21 @@ void insertWord(TrieNode*& root, string word) {
     }
     node->isEndOfWord = true;
 }
+
+void insertCompactTrieFromFile(TrieNode* root, const string& filename) {
+    ifstream file(filename);
+    string word;
+
+    if (file.is_open()) {
+        while (getline(file, word)) {
+            insertWord(root, word);
+        }
+        file.close();
+    } else {
+        cerr << "Failed to open file: " << filename << endl;
+    }
+}
+
 
 // Fungsi untuk menemukan node terakhir dari suatu prefix
 TrieNode* findNode(TrieNode* root, string prefix) {
@@ -39,11 +57,8 @@ void buildWords(TrieNode* node, vector<string>& results, string prefix) {
     if (node->isEndOfWord) {
         results.push_back(prefix);
     }
-    // iterasi melalui setiap pasangan karakter dan node anak dari node saat ini
-    for (auto it = node->children.begin(); it != node->children.end(); ++it) {
-    char c = it->first; // mengambil karakter dari pasangan karakter-node
-    TrieNode* child = it->second; // mengambil node anak dari pasangan karakter-node
-    buildWords(child, results, prefix + c); // memanggil fungsi rekursif untuk membangun kata-kata yang relevan dengan prefiks
+    for (auto& [c, child] : node->children) {
+        buildWords(child, results, prefix + c);
     }
 }
 
@@ -59,13 +74,9 @@ vector<string> autocomplete(TrieNode* root, string prefix) {
 
 int main() {
     TrieNode* root = new TrieNode();
-    insertWord(root, "code");
-    insertWord(root, "coder");
-    insertWord(root, "coding");
-    insertWord(root, "hello");
-    insertWord(root, "world");
 
-    string prefix = "co";
+    insertCompactTrieFromFile(root, "C:/POLITEKNIK NEGERI BANDUNG/SEMESTER 2/SDA/Praktik/Tugas Besar/Draft1/kata-dasar.txt");
+    string prefix = "frekuen";
     vector<string> results = autocomplete(root, prefix);
 
     cout << "Autocomplete suggestions for '" << prefix << "': " << endl;
