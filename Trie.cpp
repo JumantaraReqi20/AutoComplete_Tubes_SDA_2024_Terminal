@@ -57,7 +57,9 @@ void buildWords(TrieNode* node, vector<string>& results, string prefix) {
     if (node->isEndOfWord) {
         results.push_back(prefix);
     }
-    for (auto& [c, child] : node->children) {
+    for (const auto& pair : node->children) {
+        char c = pair.first;
+        TrieNode* child = pair.second;
         buildWords(child, results, prefix + c);
     }
 }
@@ -75,9 +77,10 @@ vector<string> autocomplete(TrieNode* root, string prefix) {
 int main() {
     TrieNode* root = new TrieNode();
 
-    insertCompactTrieFromFile(root, "C:/POLITEKNIK NEGERI BANDUNG/SEMESTER 2/SDA/Praktik/Tugas Besar/Draft1/kata-dasar.txt");
-    string prefix = "frekuen";
+    insertCompactTrieFromFile(root, "C:/POLITEKNIK NEGERI BANDUNG/SEMESTER 2/SDA/Praktik/Tugas Besar/SOURCE CODE/kata-dasar.txt");
+    string prefix = "a";
     vector<string> results = autocomplete(root, prefix);
+    sort(results.begin(), results.end());
 
     cout << "Autocomplete suggestions for '" << prefix << "': " << endl;
     for (string word : results) {
