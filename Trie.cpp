@@ -88,7 +88,7 @@ vector<string> autocomplete(TrieNode* root, string prefix) {
 void kataDasar() {
     TrieNode* root = new TrieNode();
 
-    insertCompactTrieFromFile(root, "D:/POLBAN/Semester 2/Struktur Data dan Algoritma/Big Project/AutoComplete_Tubes_SDA_2024/kata-dasar.txt");
+    insertCompactTrieFromFile(root, "C:/POLITEKNIK NEGERI BANDUNG/SEMESTER 2/SDA/Praktik/Tugas Besar/Source Code/kata-dasar.txt");
     string prefix;
     cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !\n";
     cout << "Ketik di sini : \n";
@@ -97,9 +97,11 @@ void kataDasar() {
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
     vector<string> results = autocomplete(root, prefix);
 
-    cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
     for (string word : results) {
+        system("cls");
+        cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
         cout << word << endl;
+        cin.get();
     }
 }
 
@@ -107,7 +109,7 @@ void kataDasar() {
 void kota() {
     TrieNode* root = new TrieNode();
 
-    insertCompactTrieFromFile(root, "D:/POLBAN/Semester 2/Struktur Data dan Algoritma/Big Project/AutoComplete_Tubes_SDA_2024/kota.txt");
+    insertCompactTrieFromFile(root, "kota.txt");
     string prefix;
     cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !\n";
     cout << "Ketik di sini : \n";
@@ -116,9 +118,11 @@ void kota() {
     prefix[0] = static_cast<char>(prefix[0]);
     vector<string> results = autocomplete(root, prefix);
 
-    cout << "Berikut ini nama kota yang berawalan '" << prefix << "': " << endl;
     for (string word : results) {
+        system("cls");
+        cout << "Berikut ini nama kota yang berawalan '" << prefix << "': " << endl;
         cout << word << endl;
+        cin.get();
     }
 }
 
@@ -126,7 +130,7 @@ void kota() {
 void namaOrang() {
     TrieNode* root = new TrieNode();
 
-    insertCompactTrieFromFile(root, "D:/POLBAN/Semester 2/Struktur Data dan Algoritma/Big Project/AutoComplete_Tubes_SDA_2024/namaOrang.txt");
+    insertCompactTrieFromFile(root, "namaOrang.txt");
     string prefix;
     cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !\n";
     cout << "Ketik di sini : \n";
@@ -135,8 +139,9 @@ void namaOrang() {
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
     vector<string> results = autocomplete(root, prefix);
 
-    cout << "Berikut ini nama-nama orang yang berawalan '" << prefix << "': " << endl;
     for (string word : results) {
+        system("cls");
+        cout << "Berikut ini nama-nama orang yang berawalan '" << prefix << "': " << endl;
         cout << word << endl;
         cin.get();
     }
