@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <limits>
 #include "conio.h"
 
 using namespace std;
@@ -15,6 +16,7 @@ struct TrieNode {
     bool isEndOfWord; // Penanda akhir sebuah kata
     TrieNode() : isEndOfWord(false) {} // Konstruktor default
 };
+vector<string> words;
 
 // Fungsi untuk memasukkan kata ke dalam Trie
 void insertWord(TrieNode*& root, string word) {
@@ -85,23 +87,39 @@ vector<string> autocomplete(TrieNode* root, string prefix) {
 }
 
 // Fungsi untuk menampilkan hasil autocomplete kata-kata dalam bahasa Indonesia
-void kataDasar() {
+void kataDasar(string prefix) {
     TrieNode* root = new TrieNode();
 
     insertCompactTrieFromFile(root, "C:/POLITEKNIK NEGERI BANDUNG/SEMESTER 2/SDA/Praktik/Tugas Besar/Source Code/kata-dasar.txt");
-    string prefix;
-    cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !\n";
-    cout << "Ketik di sini : \n";
-    cin >> prefix;
+    
     // mengubah semua char menjadi lowercase.
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
     vector<string> results = autocomplete(root, prefix);
-
+    sort(results.begin(), results.end());
+    bool shouldExit = false;
     for (string word : results) {
+        if (shouldExit){
+            break;
+        }    
         system("cls");
         cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
-        cout << word << endl;
-        cin.get();
+        for (size_t i = 0; i < words.size(); ++i) {
+            cout << words[i];
+            if (i != words.size() - 1) {
+            cout << " ";
+            }
+        } 
+        cout << " " << word;
+        while (true) {
+            char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
+            if (ch == 9) { // 'Tab' (kode ASCII 9)
+                break; 
+            } else if (ch == 32) { // 'Enter' (kode ASCII 13)
+                words.push_back(word);
+                shouldExit = true; 
+                break;  
+            }
+        }
     }
 }
 
@@ -165,10 +183,16 @@ void menu() {
         cout << " ================================================ " << endl;
         cout << "Pilih menu: ";
         cin >> choice;
-
+        string prefix;
         switch (choice) {
             case 1:
-                kataDasar();
+                cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !" << endl;
+                cout << "Ketik di sini : ";
+                while (true){
+                    cout << " ";
+                    cin >> prefix;
+                    kataDasar(prefix);
+                }
                 break;
             case 2:
                 namaOrang();
