@@ -131,7 +131,7 @@ void kota(string prefix) {
     insertCompactTrieFromFile(root, "kota.txt");
 
     // Mengubah char pertama menjadi uppercase.
-    prefix[0] = static_cast<char>(prefix[0]);
+    prefix[0] = static_cast<char>(toupper(prefix[0]));
     vector<string> results = autocomplete(root, prefix);
 
     sort(results.begin(), results.end());
