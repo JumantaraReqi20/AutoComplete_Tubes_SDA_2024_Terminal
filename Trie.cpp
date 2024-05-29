@@ -9,6 +9,7 @@
 #include "conio.h"
 
 using namespace std;
+void menu();
 
 // Node dalam Trie
 struct TrieNode {
@@ -16,7 +17,45 @@ struct TrieNode {
     bool isEndOfWord; // Penanda akhir sebuah kata
     TrieNode() : isEndOfWord(false) {} // Konstruktor default
 };
-vector<string> words;
+// vector<string> words;
+
+// Node dalam Double Linked List
+struct ListNode {
+    string data;
+    ListNode* prev;
+    ListNode* next;
+
+    ListNode(const string& value) : data(value), prev(nullptr), next(nullptr) {}
+};
+
+ListNode* head = nullptr;
+ListNode* tail = nullptr;
+
+// Fungsi untuk menambahkan kata ke dalam Double Linked List
+void addWord(const string& word) {
+    ListNode* newNode = new ListNode(word);
+
+    if (head == nullptr) {
+        head = newNode;
+        tail = newNode;
+    } else {
+        tail->next = newNode;
+        newNode->prev = tail;
+        tail = newNode;
+    }
+}
+
+// Fungsi untuk menampilkan kata-kata dalam Double Linked List
+void displayWords() {
+    ListNode* current = head;
+    while (current != nullptr) {
+        cout << current->data;
+        if (current->next != nullptr) {
+            cout << " ";
+        }
+        current = current->next;
+    }
+}
 
 // Fungsi untuk memasukkan kata ke dalam Trie
 void insertWord(TrieNode*& root, string word) {
@@ -94,32 +133,43 @@ void kataDasar(string prefix) {
     
     // mengubah semua char menjadi lowercase.
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
-    vector<string> results = autocomplete(root, prefix);
 
-    sort(results.begin(), results.end());
-    bool shouldExit = false;
-    for (string word : results) {
-        if (shouldExit){
+    while (true) {
+        vector<string> results = autocomplete(root, prefix);
+
+        sort(results.begin(), results.end());
+        bool shouldExit = false;
+        for (string word : results) {
+            if (shouldExit){
+                break;
+            }    
+            system("cls");
+            cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
+            displayWords(); 
+            cout << " " << word;
+            while (true) {
+                char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
+                if (ch == 9) { // 'Tab' (kode ASCII 9)
+                    break; 
+                } else if (ch == 32) { // 'Spasi' (kode ASCII 32)
+                    addWord(word);
+                    shouldExit = true; 
+                    break;  
+                } else if (ch == 13) { // 'Enter' (kode ASCII 13)
+                    shouldExit = true;
+                    break;
+                }
+            }
+        }
+
+        if (shouldExit) {
             break;
-        }    
-        system("cls");
-        cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
-        for (size_t i = 0; i < words.size(); ++i) {
-            cout << words[i];
-            if (i != words.size() - 1) {
-            cout << " ";
-            }
-        } 
-        cout << " " << word;
-        while (true) {
-            char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
-            if (ch == 9) { // 'Tab' (kode ASCII 9)
-                break; 
-            } else if (ch == 32) { // 'Enter' (kode ASCII 13)
-                words.push_back(word);
-                shouldExit = true; 
-                break;  
-            }
+        }
+
+        cout << "Tekan Enter untuk melanjutkan atau character lain untuk keluar: ";
+        char ch = ((char)_getch());
+        if (ch!= 13) {
+            menu();
         }
     }
 }
@@ -142,19 +192,14 @@ void kota(string prefix) {
         }    
         system("cls");
         cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
-        for (size_t i = 0; i < words.size(); ++i) {
-            cout << words[i];
-            if (i != words.size() - 1) {
-            cout << " ";
-            }
-        } 
+        displayWords(); 
         cout << " " << word;
         while (true) {
             char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
             if (ch == 9) { // 'Tab' (kode ASCII 9)
                 break; 
             } else if (ch == 32) { // 'Enter' (kode ASCII 13)
-                words.push_back(word);
+                addWord(word);
                 shouldExit = true; 
                 break;  
             }
@@ -180,19 +225,14 @@ void namaOrang(string prefix) {
         }    
         system("cls");
         cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
-        for (size_t i = 0; i < words.size(); ++i) {
-            cout << words[i];
-            if (i != words.size() - 1) {
-            cout << " ";
-            }
-        } 
+        displayWords(); 
         cout << " " << word;
         while (true) {
             char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
             if (ch == 9) { // 'Tab' (kode ASCII 9)
                 break; 
             } else if (ch == 32) { // 'Enter' (kode ASCII 13)
-                words.push_back(word);
+                addWord(word);
                 shouldExit = true; 
                 break;  
             }
