@@ -90,7 +90,7 @@ vector<string> autocomplete(TrieNode* root, string prefix) {
 void kataDasar(string prefix) {
     TrieNode* root = new TrieNode();
 
-    insertCompactTrieFromFile(root, "C:/POLITEKNIK NEGERI BANDUNG/SEMESTER 2/SDA/Praktik/Tugas Besar/Source Code/kata-dasar.txt");
+    insertCompactTrieFromFile(root, "kata-dasar.txt");
     
     // mengubah semua char menjadi lowercase.
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
@@ -128,19 +128,41 @@ void kota() {
     TrieNode* root = new TrieNode();
 
     insertCompactTrieFromFile(root, "kota.txt");
+
     string prefix;
     cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !\n";
     cout << "Ketik di sini : \n";
     cin >> prefix;
+
     // Mengubah char pertama menjadi uppercase.
     prefix[0] = static_cast<char>(prefix[0]);
     vector<string> results = autocomplete(root, prefix);
 
+    sort(results.begin(), results.end());
+    bool shouldExit = false;
     for (string word : results) {
+        if (shouldExit){
+            break;
+        }    
         system("cls");
-        cout << "Berikut ini nama kota yang berawalan '" << prefix << "': " << endl;
-        cout << word << endl;
-        cin.get();
+        cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
+        for (size_t i = 0; i < words.size(); ++i) {
+            cout << words[i];
+            if (i != words.size() - 1) {
+            cout << " ";
+            }
+        } 
+        cout << " " << word;
+        while (true) {
+            char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
+            if (ch == 9) { // 'Tab' (kode ASCII 9)
+                break; 
+            } else if (ch == 32) { // 'Enter' (kode ASCII 13)
+                words.push_back(word);
+                shouldExit = true; 
+                break;  
+            }
+        }
     }
 }
 
@@ -149,20 +171,42 @@ void namaOrang() {
     TrieNode* root = new TrieNode();
 
     insertCompactTrieFromFile(root, "namaOrang.txt");
+
     string prefix;
     cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !\n";
     cout << "Ketik di sini : \n";
     cin >> prefix;
+
     // mengubah semua char menjadi lowercase.
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
     vector<string> results = autocomplete(root, prefix);
 
+    sort(results.begin(), results.end());
+    bool shouldExit = false;
     for (string word : results) {
+        if (shouldExit){
+            break;
+        }    
         system("cls");
-        cout << "Berikut ini nama-nama orang yang berawalan '" << prefix << "': " << endl;
-        cout << word << endl;
-        cin.get();
-    }
+        cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
+        for (size_t i = 0; i < words.size(); ++i) {
+            cout << words[i];
+            if (i != words.size() - 1) {
+            cout << " ";
+            }
+        } 
+        cout << " " << word;
+        while (true) {
+            char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
+            if (ch == 9) { // 'Tab' (kode ASCII 9)
+                break; 
+            } else if (ch == 32) { // 'Enter' (kode ASCII 13)
+                words.push_back(word);
+                shouldExit = true; 
+                break;  
+            }
+        }
+    }   
 }
 
 void menu() {
