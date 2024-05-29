@@ -95,6 +95,7 @@ void kataDasar(string prefix) {
     // mengubah semua char menjadi lowercase.
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
     vector<string> results = autocomplete(root, prefix);
+
     sort(results.begin(), results.end());
     bool shouldExit = false;
     for (string word : results) {
@@ -124,15 +125,10 @@ void kataDasar(string prefix) {
 }
 
 // Fungsi untuk menampilkan hasil autocomplete nama daerah di Indonesia
-void kota() {
+void kota(string prefix) {
     TrieNode* root = new TrieNode();
 
     insertCompactTrieFromFile(root, "kota.txt");
-
-    string prefix;
-    cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !\n";
-    cout << "Ketik di sini : \n";
-    cin >> prefix;
 
     // Mengubah char pertama menjadi uppercase.
     prefix[0] = static_cast<char>(prefix[0]);
@@ -167,15 +163,10 @@ void kota() {
 }
 
 // Fungsi untuk menampilkan hasil autocomplete nama-nama orang
-void namaOrang() {
+void namaOrang(string prefix) {
     TrieNode* root = new TrieNode();
 
     insertCompactTrieFromFile(root, "namaOrang.txt");
-
-    string prefix;
-    cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !\n";
-    cout << "Ketik di sini : \n";
-    cin >> prefix;
 
     // mengubah semua char menjadi lowercase.
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
@@ -239,10 +230,20 @@ void menu() {
                 }
                 break;
             case 2:
-                namaOrang();
+                cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !" << endl;
+                cout << "Ketik di sini : ";
+                while (true){
+                    cout << " ";
+                    cin >> prefix;
+                    namaOrang(prefix);
+                }
                 break;
             case 3:
-                kota();
+                while (true){
+                    cout << " ";
+                    cin >> prefix;
+                    kota(prefix);
+                }
                 break;
             case 0:
                 exit(0);
