@@ -85,19 +85,21 @@ vector<string> autocomplete(TrieNode* root, string prefix) {
     }
     return results; // Kembalikan vektor results
 }
-
+void menu();
 // Fungsi untuk menampilkan hasil autocomplete kata-kata dalam bahasa Indonesia
 void kataDasar(string prefix) {
     TrieNode* root = new TrieNode();
 
-    insertCompactTrieFromFile(root, "kata-dasar.txt");
+    insertCompactTrieFromFile(root, "C:/POLITEKNIK NEGERI BANDUNG/SEMESTER 2/SDA/Praktik/Tugas Besar/Source Code/kata-dasar.txt");
     
     // mengubah semua char menjadi lowercase.
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
     vector<string> results = autocomplete(root, prefix);
 
     sort(results.begin(), results.end());
+
     bool shouldExit = false;
+    int keluar = 0;
     for (string word : results) {
         if (shouldExit){
             break;
@@ -115,33 +117,43 @@ void kataDasar(string prefix) {
             char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
             if (ch == 9) { // 'Tab' (kode ASCII 9)
                 break; 
-            } else if (ch == 32) { // 'Enter' (kode ASCII 13)
+            } else if (ch == 32) { // 'Spasi' (kode ASCII 32)
                 words.push_back(word);
                 shouldExit = true; 
-                break;  
+                break;
+            } else if (ch == 13){ // 'Enter' (kode ASCII 13)
+                keluar = 1;
+                shouldExit = true;
+                break;
             }
         }
+    }
+    if (keluar == 1){
+        menu();
     }
 }
 
 // Fungsi untuk menampilkan hasil autocomplete nama daerah di Indonesia
-void kota(string prefix) {
+void kota() {
     TrieNode* root = new TrieNode();
 
     insertCompactTrieFromFile(root, "kota.txt");
-
+    string prefix;
+    cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !\n";
+    cout << "Ketik di sini : ";
+    cin >> prefix;
     // Mengubah char pertama menjadi uppercase.
     prefix[0] = static_cast<char>(toupper(prefix[0]));
     vector<string> results = autocomplete(root, prefix);
 
-    sort(results.begin(), results.end());
     bool shouldExit = false;
+    int keluar = 0;
     for (string word : results) {
         if (shouldExit){
             break;
         }    
         system("cls");
-        cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
+        cout << "Berikut ini kota-kota yang berawalan '" << prefix << "': " << endl;
         for (size_t i = 0; i < words.size(); ++i) {
             cout << words[i];
             if (i != words.size() - 1) {
@@ -153,51 +165,68 @@ void kota(string prefix) {
             char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
             if (ch == 9) { // 'Tab' (kode ASCII 9)
                 break; 
-            } else if (ch == 32) { // 'Enter' (kode ASCII 13)
+            } else if (ch == 32) { // 'Spasi' (kode ASCII 32)
                 words.push_back(word);
                 shouldExit = true; 
-                break;  
+                break;
+            } else if (ch == 13){ // 'Enter' (kode ASCII 13)
+                keluar = 1;
+                shouldExit = true;
+                break;
             }
         }
+    }
+    if (keluar == 1){
+        menu();
     }
 }
 
 // Fungsi untuk menampilkan hasil autocomplete nama-nama orang
-void namaOrang(string prefix) {
+void namaOrang() {
     TrieNode* root = new TrieNode();
 
     insertCompactTrieFromFile(root, "namaOrang.txt");
-
+    string prefix;
+    cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !\n";
+    cout << "Ketik di sini : ";
+    cin >> prefix;
     // mengubah semua char menjadi lowercase.
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
     vector<string> results = autocomplete(root, prefix);
 
-    sort(results.begin(), results.end());
     bool shouldExit = false;
+    int keluar = 0;
     for (string word : results) {
         if (shouldExit){
             break;
         }    
         system("cls");
-        cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
+        cout << "Berikut ini nama-nama yang berawalan '" << prefix << "': " << endl;
         for (size_t i = 0; i < words.size(); ++i) {
             cout << words[i];
             if (i != words.size() - 1) {
             cout << " ";
             }
-        } 
+        }
         cout << " " << word;
         while (true) {
             char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
             if (ch == 9) { // 'Tab' (kode ASCII 9)
                 break; 
-            } else if (ch == 32) { // 'Enter' (kode ASCII 13)
+            } else if (ch == 32) { // 'Spasi' (kode ASCII 32)
                 words.push_back(word);
                 shouldExit = true; 
-                break;  
+                break;
+            } else if (ch == 13){ // 'Enter' (kode ASCII 13)
+                keluar = 1;
+                shouldExit = true;
+                break;
             }
         }
-    }   
+    }
+    if (keluar == 1){
+        menu();
+    }
 }
 
 void menu() {
@@ -230,19 +259,15 @@ void menu() {
                 }
                 break;
             case 2:
-                cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !" << endl;
-                cout << "Ketik di sini : ";
                 while (true){
                     cout << " ";
-                    cin >> prefix;
-                    namaOrang(prefix);
+                    kota();
                 }
                 break;
             case 3:
                 while (true){
                     cout << " ";
-                    cin >> prefix;
-                    kota(prefix);
+                    namaOrang();
                 }
                 break;
             case 0:
