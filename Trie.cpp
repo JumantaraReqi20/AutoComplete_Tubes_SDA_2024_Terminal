@@ -7,28 +7,14 @@
 #include <algorithm>
 #include <limits>
 #include "conio.h"
+#include "Trie.h"
 
 using namespace std;
-void menu();
-
-// Node dalam Trie
-struct TrieNode {
-    unordered_map<char, TrieNode*> children; // Anak-anak dari node akan diimpelementasikan dengan map
-    bool isEndOfWord; // Penanda akhir sebuah kata
-    TrieNode() : isEndOfWord(false) {} // Konstruktor default
-};
-
-typedef struct Node
-{
-    string data;
-    Node* next;
-    Node(const string& kata) : data(kata),  next(nullptr){}
-}tempKata;
 
 tempKata* headTemp = nullptr;
 tempKata* tailTemp = nullptr;
 
-// Fungsi untuk menambahkan kata-kata sementara ke dalam Double Linked List
+// Fungsi untuk menambahkan kata-kata sementara ke dalam Linked List
 void addWordTemp(const string& word) {
     tempKata* newNode = new tempKata(word);
 
@@ -38,7 +24,6 @@ void addWordTemp(const string& word) {
     } else {
         tailTemp->next = newNode;
         tailTemp = newNode;
-        newNode->next = nullptr;
     }
 }
 
@@ -53,6 +38,8 @@ void displayWordsTemp() {
         current = current->next;
     }
 }
+
+//Fungsi untuk menghapus elemen linked list
 void deleteListTemp() {
     tempKata* current = headTemp;
     while (current != nullptr) {
@@ -66,14 +53,14 @@ void deleteListTemp() {
 
 // Fungsi untuk memasukkan kata ke dalam Trie
 void insertWord(TrieNode*& root, string word) {
-    TrieNode* node = root; // Inisialisasi node dengan root Trie.
+    TrieNode* node = root; 
     // Loop melalui setiap karakter yang terdapat dalam kata
     for (char c : word) {
         // Pengecekan keberadaan karakter dalam node anak.
         if (!node->children.count(c)) {
-            node->children[c] = new TrieNode(); // Jika tidak ada, buat node baru
+            node->children[c] = new TrieNode(); 
         }
-        node = node->children[c]; // Jika ada, maka pindahkan ke node anak
+        node = node->children[c]; 
     }
     node->isEndOfWord = true; // Menandai node terakhir sebagai akhir dari kata
 }
@@ -81,35 +68,34 @@ void insertWord(TrieNode*& root, string word) {
 // Fungsi untuk membaca kata-kata dari file dan memasukkannya ke dalam Trie
 void insertCompactTrieFromFile(TrieNode* root, const string& filename) {
     ifstream file(filename); // Membuka file kata-kata atau nama daerah atau nama orang
-    string word; // menyimpan kata dari file
+    string word; 
 
-    // Pengecekan file, apakah sudah dibuka?
+   
     if (file.is_open()) {
         // Loop melalui setiap baris yang ada di dalam file
         while (getline(file, word)) {
-            insertWord(root, word); // Masukkan kata ke dalam Trie
+            insertWord(root, word);
         }
-        file.close(); // Menutup file apabila telah selesai membaca
+        file.close(); 
     } else {
-        cerr << "Failed to open file: " << filename << endl; // Menampilkan pesan apabila file tidak berhasil dibuka
+        cerr << "Failed to open file: " << filename << endl; 
     }
 }
 
 
 // Fungsi untuk menemukan node terakhir dari suatu prefix
 TrieNode* findNode(TrieNode* root, string prefix) {
-    TrieNode* node = root; // Inisialisasi node dengar root Trie
+    TrieNode* node = root;
     // Loop melalui setiap karakter dalam prefix
     for (char c : prefix) {
         if (!node->children.count(c)) return nullptr; // Jika karakter tidak tersedia dalam node anak, maka kembalikan null
-        node = node->children[c]; // Jika tersedia, pindahkan node ke node anak
+        node = node->children[c]; 
     }
-    return node; // Mengembalikan node terakhir dari prefix
+    return node; 
 }
 
 // Fungsi rekursif untuk membangun semua kata yang memiliki prefix tertentu
 void buildWords(TrieNode* node, vector<string>& results, string prefix) {
-    // Jika node saat ini adalah akhir dari kata
     if (node->isEndOfWord) {
         results.push_back(prefix); // Tambahkan kata ke dalam results
     }
@@ -123,19 +109,19 @@ void buildWords(TrieNode* node, vector<string>& results, string prefix) {
 
 // Fungsi untuk mencari semua kata yang memiliki prefix tertentu
 vector<string> autocomplete(TrieNode* root, string prefix) {
-    vector<string> results; // Vektor untuk menyimpan hasil autocomplete
+    vector<string> results; 
     TrieNode* node = findNode(root, prefix); // Temukan node terakhir dari prefix untuk kemudian disimpan ke dalam 'node'
-    // Jika node telah ditemukan
+
     if (node) {
         buildWords(node, results, prefix); // Panggil fungsi rekursif untuk membangun kata-kata
-    }
-    return results; // Kembalikan vektor results
+    } 
+    return results; 
 }
 
 // Fungsi untuk menampilkan hasil autocomplete kata-kata dalam bahasa Indonesia
 void kataDasar(string prefix) {
     TrieNode* root = new TrieNode();
-    insertCompactTrieFromFile(root, "kata-dasar.txt");
+    insertCompactTrieFromFile(root, "./source/kata-dasar.txt");
 
     // mengubah semua char menjadi lowercase
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c) {
@@ -149,13 +135,16 @@ void kataDasar(string prefix) {
 
     size_t index = 0;
     size_t panjang = results.size();
+    if (panjang > 0){
+        while (!shouldExit){  
+            system("cls");
+            cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
+            if (headTemp == nullptr){
+                cout << ">>";
+            } else {
+                displayWordsTemp();
+            }
 
-    while (!shouldExit){  
-        system("cls");
-        cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
-        displayWordsTemp();
-
-        if (panjang > 0){
             cout << " " << results[index];
             while (true) {
                 char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
@@ -172,75 +161,22 @@ void kataDasar(string prefix) {
                     break;
                 }
             }
-        } 
-    }
-    if (keluar == 1){
-        deleteListTemp();
-        menu();
+        }
+        if (keluar == 1){
+            deleteListTemp();
+            menu();
+        }
+    } else {
+        cout << "Kata tidak terdaftar dalam KBBI!" << endl;
+        cout << "Masukkan kata yang benar >> ";
     }
 }
-// void kataDasar(string prefix) {
-//     TrieNode* root = new TrieNode();
-//     insertCompactTrieFromFile(root, "kata-dasar.txt");
-
-//     // mengubah semua char menjadi lowercase
-//     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c) {
-//         return tolower(c);
-//     });
-
-//     vector<string> results = autocomplete(root, prefix);
-//     sort(results.begin(), results.end());
-//     bool shouldExit = false;
-//     int keluar = 0;
-
-//     for (string kata : results) {
-//         addWordAll(kata);
-//     }
-
-//     allKata* current = headAll;
-
-//     while (current != nullptr) {
-//         if (shouldExit) {
-//             break;
-//         }
-//         system("cls");
-//         cout << "Berikut ini kata-kata yang berawalan '" << prefix << "': " << endl;
-//         displayWordsTemp();
-//         cout << " " << current->data;
-
-//         while (true) {
-//             char ch = ((char)_getch());
-//             if (ch == 9) { // 'Tab' (kode ASCII 9)
-//                 break;
-//             } else if (ch == 32) { // 'Spasi' (kode ASCII 32)
-//                 addWordTemp(current->data);
-//                 // if (headAll != nullptr) {
-//                     deleteListAll();
-//                 // }
-//                 shouldExit = true;
-//                 break;
-//             } else if (ch == 13) { // 'Enter' (kode ASCII 13)
-//                 keluar = 1;
-//                 shouldExit = true;
-//                 break;
-//             }
-//         }
-//         current = current->next;
-//     }
-
-//     if (keluar == 1) {
-//         deleteListAll();
-//         deleteListTemp(); // Menghapus tempKata setelah keluar dari loop
-//         menu();
-//     }
-// }
-
 
 // Fungsi untuk menampilkan hasil autocomplete nama daerah di Indonesia
 void kota(string prefix) {
     TrieNode* root = new TrieNode();
 
-    insertCompactTrieFromFile(root, "kota.txt");
+    insertCompactTrieFromFile(root, "./source/kota.txt");
 
     // Mengubah char pertama menjadi uppercase.
     prefix[0] = static_cast<char>(toupper(prefix[0]));
@@ -250,14 +186,15 @@ void kota(string prefix) {
     bool shouldExit = false;
     int keluar = 0;
 
-   size_t index = 0;
-   size_t panjang = results.size();
-    while (!shouldExit){  
-        system("cls");
+    size_t index = 0;
+    size_t panjang = results.size();
+    if (panjang > 0){
+        while (!shouldExit){  
+            system("cls");
 
-        cout << "Berikut ini kota-kota yang berawalan '" << prefix << "': " << endl;
-        displayWordsTemp();
-        if (panjang > 0){
+            cout << "Berikut ini kota-kota yang berawalan '" << prefix << "': " << endl;
+            displayWordsTemp();
+            
             cout << " " << results[index];
             while (true) {
                 char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
@@ -274,20 +211,23 @@ void kota(string prefix) {
                     break;
                 }
             }
-        } 
-    }
-    if (keluar == 1){
-        deleteListTemp();
-        menu();
+        
+        }
+        if (keluar == 1){
+            deleteListTemp();
+            menu();
+        }
+    } else {
+        cout << "Kata tidak terdaftar dalam KBBI!" << endl;
+        cout << "Masukkan kata yang benar >> ";
     }
 }
-
 
 // Fungsi untuk menampilkan hasil autocomplete nama-nama orang
 void namaOrang(string prefix) {
     TrieNode* root = new TrieNode();
 
-    insertCompactTrieFromFile(root, "namaOrang.txt");
+    insertCompactTrieFromFile(root, "./source/namaOrang.txt");
 
     // mengubah semua char menjadi lowercase.
     transform(prefix.begin(), prefix.end(), prefix.begin(), [](unsigned char c){ return tolower(c); });
@@ -299,12 +239,13 @@ void namaOrang(string prefix) {
 
     size_t index = 0;
     size_t panjang = results.size();
-    while (!shouldExit){  
-        system("cls");
+    if (panjang > 0){
+        while (!shouldExit){  
+            system("cls");
 
         cout << "Berikut ini nama-nama yang berawalan '" << prefix << "': " << endl;
         displayWordsTemp();
-        if (panjang > 0){
+        
             cout << " " << results[index];
             while (true) {
                 char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
@@ -321,13 +262,92 @@ void namaOrang(string prefix) {
                     break;
                 }
             }
-        } 
+        
+        }
+        if (keluar == 1){
+            deleteListTemp();
+            menu();
+        }   
+    } else {
+        cout << "Kata tidak terdaftar dalam KBBI!" << endl;
+        cout << "Masukkan kata yang benar >> ";
     }
-    if (keluar == 1){
-        deleteListTemp();
-        menu();
-    }   
 }
+
+void saveWordsToFile(const string& filename) {
+    ofstream outFile(filename); // Membuka file untuk output
+
+    if (!outFile) {
+        cerr << "Error: File could not be opened." << endl;
+        return;
+    }
+
+    Node* current = headTemp;
+    while (current != nullptr) {
+        outFile << current->data << " "; // Menulis setiap kata ke file
+        current = current->next;
+    }
+
+    outFile.close(); // Menutup file
+    cout << "Words have been saved to " << filename << endl;
+    getch();
+}
+
+void notePad(string prefix) {
+    TrieNode* root = new TrieNode();
+    insertCompactTrieFromFile(root, "./source/kata-dasar.txt");
+    insertCompactTrieFromFile(root, "./source/kota.txt");
+    insertCompactTrieFromFile(root, "./source/namaOrang.txt");
+
+    vector<string> results = autocomplete(root, prefix);
+    sort(results.begin(), results.end());
+    
+    bool shouldExit = false;
+    int keluar = 0;
+
+    size_t index = 0;
+    size_t panjang = results.size();
+    if (panjang > 0){
+        while (!shouldExit){  
+            system("cls");
+
+            cout << "Tekan tombol Esc untuk menyimpan tulisan!" << endl;
+            displayWordsTemp();
+                cout << " " << results[index];
+                while (true) {
+                    char ch = ((char)_getch()); // Menggunakan getch() untuk menangkap input tanpa enter
+                    if (ch == 9) { // 'Tab' (kode ASCII 9)
+                        index = (index + 1) % panjang;
+                        break; 
+                    } else if (ch == 32) { // 'Spasi' (kode ASCII 13)
+                        addWordTemp(results[index]);
+                        shouldExit = true; 
+                        break;
+                    } else if(ch == 13){ // 'Enter' (kode ASCII 13)
+                        addWordTemp("\n");
+                        shouldExit = true;
+                        break;
+                    } else if (ch == 27){ // 'Esc' (kode ASCII 27)
+                        keluar = 1;
+                        addWordTemp(results[index]);
+                        string namaFile;
+                        cout << "\nMasukkan nama file >> "; cin >> namaFile;
+                        saveWordsToFile(namaFile + ".txt");
+                        shouldExit = true;
+                        break;
+                    }
+                } 
+        }
+        if (keluar == 1){
+            deleteListTemp();
+            menu();
+        } 
+    } else {
+        cout << "Kata tidak terdaftar dalam KBBI!" << endl;
+        cout << "Masukkan kata yang benar >> ";
+    }
+}
+
 
 
 void menu() {
@@ -342,6 +362,7 @@ void menu() {
         cout << "|         (1) Kosakata Bahasa Indonesia          |" << endl;
         cout << "|         (2) Nama Orang                         |" << endl;
         cout << "|         (3) Nama Daerah di Indonesia           |" << endl;
+        cout << "|         (4) Magic Notepad (sekali ngedip)      |" << endl;
         cout << "|         (0) Keluar                             |" << endl;
         cout << "|            Masukkan beberapa huruf             |" << endl;
         cout << "|            Temukan keajaiban! ('<')            |" << endl;
@@ -354,7 +375,7 @@ void menu() {
                 cout << "Ketik di sini : ";
                 while (true){
                     string prefix;
-                    cout << " ";
+                    // cout << " ";
                     cin >> prefix;
                     kataDasar(prefix);
                 }
@@ -373,12 +394,21 @@ void menu() {
                 cout << "Masukkan beberapa huruf, dan kamu akan menemukan keajaiban ('<') !" << endl;
                 cout << "Ketik di sini : ";
                 while (true){
-                    cout << " ";
                     string prefix;
+                    cout << " ";
                     cin >> prefix;
                     kota(prefix);
                 }
                 break;
+            case 4:
+                cout << "Selamat datang di magic Notepad !" << endl;
+                cout << ">> ";
+                while (true){
+                    string prefix;
+                    // cout << " ";
+                    cin >> prefix;
+                    notePad(prefix);
+                }
             case 0:
                 exit(0);
             default:
@@ -392,9 +422,3 @@ void menu() {
     }
 }
 
-int main() {
-    menu();
-
-    cin.get(); // Menunggu input dari pengguna sebelum keluar
-    return 0;
-}
