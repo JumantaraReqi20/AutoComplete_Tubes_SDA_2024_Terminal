@@ -110,10 +110,12 @@ void buildWords(TrieNode* node, vector<string>& results, string prefix) {
 // Fungsi untuk mencari semua kata yang memiliki prefix tertentu
 vector<string> autocomplete(TrieNode* root, string prefix) {
     vector<string> results; 
-    TrieNode* node = findNode(root, prefix); // Temukan node terakhir dari prefix untuk kemudian disimpan ke dalam 'node'
+    // Temukan node terakhir dari prefix untuk kemudian disimpan ke dalam 'node'
+    TrieNode* node = findNode(root, prefix); 
 
     if (node) {
-        buildWords(node, results, prefix); // Panggil fungsi rekursif untuk membangun kata-kata
+        // Panggil fungsi rekursif untuk membangun kata-kata
+        buildWords(node, results, prefix); 
     } 
     return results; 
 }
@@ -218,8 +220,8 @@ void kota(string prefix) {
             menu();
         }
     } else {
-        cout << "Kata tidak terdaftar dalam KBBI!" << endl;
-        cout << "Masukkan kata yang benar >> ";
+        cout << "Tidak dapat menemukan kota!" << endl;
+        cout << "Masukkan awalan nama kota yang benar >> ";
     }
 }
 
@@ -356,8 +358,8 @@ void menu() {
     while (true) {
         system("cls"); // Bersihkan layar (Windows)
         cout << " ================================================ " << endl;
-        cout << "|                   BANK KATA                    |" << endl;
-        cout << "|                   ---------                    |" << endl;
+        cout << "|                   AUTONOTE                     |" << endl;
+        cout << "|                  ----------                    |" << endl;
         cout << "|            Halo, mau nyari apa nih?            |" << endl;
         cout << "|         (1) Kosakata Bahasa Indonesia          |" << endl;
         cout << "|         (2) Nama Orang                         |" << endl;
